@@ -12,6 +12,7 @@ import java.util.List;
 public interface QuestionRepository extends ReactiveMongoRepository<Questions, String> {
 
     Flux<Questions> findByAuthorId(String authorId);
+
     Mono<Long> countByAuthorId(String authorId);
 
 }
