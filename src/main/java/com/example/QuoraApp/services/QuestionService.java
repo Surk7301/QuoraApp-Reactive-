@@ -1,11 +1,13 @@
 package com.example.QuoraApp.services;
 
+import com.example.QuoraApp.adapter.QuestionAdapter;
 import com.example.QuoraApp.dto.QuestionRequestDTO;
 import com.example.QuoraApp.dto.QuestionResponseDTO;
 import com.example.QuoraApp.models.Questions;
 import com.example.QuoraApp.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
@@ -14,6 +16,10 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class QuestionService implements IQuestionService {
     private final QuestionRepository questionRepository;
+
+//    public QuestionService(QuestionRepository questionRepository){
+//        this.questionRepository = questionRepository;
+//    }
 
     @Override
     public Mono<QuestionResponseDTO> createQuestion(QuestionRequestDTO questionRequestDTO){
@@ -25,8 +31,16 @@ public class QuestionService implements IQuestionService {
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        questionRepository.save(questions)
-                .map(null)
-        return null;
+        return questionRepository.save(questions)
+                .map(QuestionAdapter::toQuestionResponseDTO)
+                .doOnSuccess(response -> System.out.println("Question created successfully: " + response))
+                .doOnError(error -> System.out.println("Error in creating question: "+error));
+
+    }
+
+    @Override
+    public Flux<QuestionResponseDTO> searchQuestions(String searchTerm, int offset, int page){
+        return questionRepository.findByTitleOrContentContainingIgnoreCase()
+
     }
 }
