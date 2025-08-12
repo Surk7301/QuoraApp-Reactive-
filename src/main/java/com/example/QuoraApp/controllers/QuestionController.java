@@ -28,7 +28,8 @@ public class QuestionController {
     }
 
     public Flux<QuestionResponseDTO> getAllQuestions(){
-        throw new UnsupportedOperationException("Not implemented");
+        @RequestParam(required = false) String cursor,
+        @RequestParam(defaultValue = "10") int size
     }
 
     @DeleteMapping("/{id}")
