@@ -1,6 +1,7 @@
 package com.example.QuoraApp.repository;
 
 import com.example.QuoraApp.models.Questions;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.Query;
@@ -9,6 +10,7 @@ import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRep
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 
+import java.time.LocalDateTime;
 
 
 @Repository
@@ -20,5 +22,9 @@ public interface QuestionRepository extends ReactiveMongoRepository<Questions, S
 //    Mono<Long> countByAuthorId(String authorId);
     @Query("{'$or': [ { 'title': {$regex:?0, $options: 'i'}}, {'content': {$regex:?0, $options: 'i'}}]}")
     Flux<Questions> findByTitleOrContentContainingIgnoreCase(String searchTerm, Pageable pageable);
+
+    Flux<Questions> findByCreatedAtGreaterThanOrderByCreatedAtAsc(LocalDateTime cursor, Pageable pageable);
+
+    Flux<Questions> findTop10ByOrderByCreatedAtAsc();
 
 }
