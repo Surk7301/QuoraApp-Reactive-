@@ -6,6 +6,8 @@ import com.example.QuoraApp.dto.QuestionResponseDTO;
 import com.example.QuoraApp.models.Questions;
 import com.example.QuoraApp.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -40,7 +42,11 @@ public class QuestionService implements IQuestionService {
 
     @Override
     public Flux<QuestionResponseDTO> searchQuestions(String searchTerm, int offset, int page){
-        return questionRepository.findByTitleOrContentContainingIgnoreCase()
+        return questionRepository.findByTitleOrContentContainingIgnoreCase(searchTerm, PageRequest.of(offset, page))
+                .map(QuestionAdapter::toQuestionResponseDTO)
+                .doOnError(error -> System.out.println("Error in searching question: " + error))
+                .doOnComplete(() -> System.out.println("Questions searched successfully" ));
+
 
     }
 }

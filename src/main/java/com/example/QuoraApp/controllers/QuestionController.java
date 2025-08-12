@@ -42,7 +42,8 @@ public class QuestionController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ){
-        throw new UnsupportedOperationException("Not implemented");
+        return questionService.searchQuestions(query, page, size);
+
     }
 
     @GetMapping("/tag/{tag}")
