@@ -56,11 +56,11 @@ public class QuestionService implements IQuestionService {
         Pageable pageable = PageRequest.of(0, size);
 
         if(!CursorUtils.isValidCursor(cursor)){
-            return  questionRepository.findTop10ByOrderByCreatedAtAsc()
-                    .take(size)
-                    .map(QuestionAdapter::toQuestionResponseDTO)
-                    .doOnError(error -> System.out.println("Error fetching questions: "+ error))
-                    .doOnComplete(()-> System.out.println("Question fetched successfully"));
+                return  questionRepository.findTop10ByOrderByCreatedAtAsc()
+                        .take(size)
+                        .map(QuestionAdapter::toQuestionResponseDTO)
+                        .doOnError(error -> System.out.println("Error fetching questions: "+ error))
+                        .doOnComplete(()-> System.out.println("Question fetched successfully"));
 
         }else {
             LocalDateTime cursorTimeStamp = CursorUtils.parseCursor(cursor);
@@ -70,4 +70,13 @@ public class QuestionService implements IQuestionService {
                     .doOnComplete(() -> System.out.println("Question fetched successfully"));
         }
     }
+
+    @Override
+    public Mono <QuestionResponseDTO> getQuestionById(String id){
+        return questionRepository.findById(id)
+                .map(QuestionAdapter::toQuestionResponseDTO)
+                .doOnError(error -> System.out.println("Error fetching questions: "+ error))
+                .doOnSuccess(result -> System.out.println("Question fetched successfully"));
+    }
+
 }
