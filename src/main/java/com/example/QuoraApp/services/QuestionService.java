@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class QuestionService implements IQuestionService {
     private final QuestionRepository questionRepository;
-    private KafkaEventProducer kafkaEventProducer;
+    private final KafkaEventProducer kafkaEventProducer;
 
 //    public QuestionService(QuestionRepository questionRepository){
 //        this.questionRepository = questionRepository;
@@ -82,6 +82,7 @@ public class QuestionService implements IQuestionService {
                 .doOnSuccess(result ->{
                     System.out.println("Question fetched successfully");
                     ViewCountEvent viewCountEvent = new ViewCountEvent(id, "question", LocalDateTime.now());
+                    System.out.println("View count: " + viewCountEvent);
                     kafkaEventProducer.publishViewCountEvent(viewCountEvent);
                 });
     }

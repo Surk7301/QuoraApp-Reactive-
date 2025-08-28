@@ -23,8 +23,10 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")
-    public Flux<QuestionResponseDTO> getQuestionId(@PathVariable String id){
-        throw new UnsupportedOperationException("Not implemented");
+    public Mono<QuestionResponseDTO> getQuestionId(@PathVariable String id){
+        return questionService.getQuestionById(id)
+                .doOnError(error -> System.out.println("Error in fetching question: " + error))
+                .doOnSuccess(response -> System.out.println("Question fetched successfully: " + response));
     }
 
     @GetMapping()
